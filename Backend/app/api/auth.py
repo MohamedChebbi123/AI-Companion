@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.core.deps import get_db
+from app.core.deps import get_db, get_current_user
 from app.core.errors import AuthError, ConflictError
+from app.db.models.user import User
 from app.modules.auth.schemas import Register, Login
 from app.modules.auth.service import register, login
 from app.modules.auth.tokens import create_access_token, create_refresh_token
@@ -29,4 +30,14 @@ def login_route(data: Login, db: Session = Depends(get_db)):
         "access_token": create_access_token(str(user.id)),
         "refresh_token": create_refresh_token(str(user.id)),
         "token_type": "bearer",
+    }
+
+
+@router.get("/me")
+def me(user: User = Depends(get_current_user)):
+    return {
+        "id": str(user.id),
+        "email": user.email,
+        "display_name": user.display_name,
+        "status": user.status,
     }

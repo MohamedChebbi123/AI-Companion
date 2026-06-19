@@ -1,9 +1,7 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* Class-based dark mode for Tailwind v4 */
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
   --color-background: var(--background);
@@ -11,7 +9,6 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 
-  /* Stitch / Aura AI design tokens */
   --color-primary: #6366F1;
   --color-surface: #111827;
   --color-surface-container: #151C2C;
@@ -20,11 +17,69 @@
   --color-outline: #232B3D;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Auth page theme tokens */
+:root {
+  --background: #fdf6f0;
+  --foreground: #2d1f1a;
+
+  /* Rose & Cream light theme */
+  --auth-bg: #f0e6df;
+  --auth-gradient: radial-gradient(ellipse 75% 55% at 50% 38%, rgba(192,101,74,0.09) 0%, transparent 65%);
+  --auth-card-bg: #fdf6f0;
+  --auth-card-border: #e8cfc9;
+  --auth-card-shadow: 0 0 0 1px #e8cfc9, 0 8px 32px rgba(45,31,26,0.09), 0 1px 2px rgba(45,31,26,0.05);
+  --auth-logo-divider: #f0ddd7;
+  --auth-text-primary: #2d1f1a;
+  --auth-text-muted: #a07060;
+  --auth-text-label: #b06060;
+  --auth-text-forgot: #c0654a;
+  --auth-text-footer: #a07060;
+  --auth-text-footer-link: #c0654a;
+  --auth-input-bg: #ffffff;
+  --auth-input-border: #e8cfc9;
+  --auth-input-focus-border: #c0654a;
+  --auth-input-focus-bg: #ffffff;
+  --auth-footer-border: #f0ddd7;
+  --auth-error-bg: rgba(192,101,74,0.08);
+  --auth-error-border: rgba(192,101,74,0.22);
+  --auth-accent: #c0654a;
+  --auth-accent-shadow: 0 1px 2px rgba(45,31,26,0.25), 0 0 0 1px rgba(192,101,74,0.45);
+  --auth-logo-bg: #f2c4b4;
+  --auth-logo-border: rgba(192,101,74,0.30);
+  --auth-logo-dot: #c0654a;
+  --auth-logo-ring: rgba(192,101,74,0.45);
+}
+
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+
+  /* Charcoal & Violet dark theme */
+  --auth-bg: #0A0A0F;
+  --auth-gradient: radial-gradient(ellipse 75% 55% at 50% 38%, rgba(124,92,255,0.10) 0%, transparent 65%);
+  --auth-card-bg: rgba(255,255,255,0.025);
+  --auth-card-border: rgba(255,255,255,0.07);
+  --auth-card-shadow: 0 0 0 1px rgba(255,255,255,0.04), 0 8px 48px rgba(0,0,0,0.55), 0 1px 2px rgba(0,0,0,0.4);
+  --auth-logo-divider: rgba(255,255,255,0.05);
+  --auth-text-primary: #FFFFFF;
+  --auth-text-muted: rgba(255,255,255,0.38);
+  --auth-text-label: rgba(255,255,255,0.50);
+  --auth-text-forgot: rgba(255,255,255,0.30);
+  --auth-text-footer: rgba(255,255,255,0.28);
+  --auth-text-footer-link: rgba(255,255,255,0.50);
+  --auth-input-bg: rgba(255,255,255,0.04);
+  --auth-input-border: rgba(255,255,255,0.08);
+  --auth-input-focus-border: rgba(124,92,255,0.55);
+  --auth-input-focus-bg: rgba(255,255,255,0.055);
+  --auth-footer-border: rgba(255,255,255,0.05);
+  --auth-error-bg: rgba(239,68,68,0.07);
+  --auth-error-border: rgba(239,68,68,0.14);
+  --auth-accent: #7C5CFF;
+  --auth-accent-shadow: 0 1px 2px rgba(0,0,0,0.35), 0 0 0 1px rgba(124,92,255,0.45);
+  --auth-logo-bg: rgba(124,92,255,0.10);
+  --auth-logo-border: rgba(124,92,255,0.22);
+  --auth-logo-dot: #7C5CFF;
+  --auth-logo-ring: rgba(124,92,255,0.45);
 }
 
 body {

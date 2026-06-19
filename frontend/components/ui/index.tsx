@@ -24,9 +24,9 @@ export const Input = forwardRef<
   <input
     ref={ref}
     className={cn(
-      'w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm',
-      'outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200',
-      'dark:border-zinc-700 dark:bg-zinc-900 dark:text-white',
+      'w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-white/30',
+      'outline-none transition-colors',
+      'focus:border-indigo-500/60 focus:ring-2 focus:ring-indigo-500/20',
       className
     )}
     {...props}
