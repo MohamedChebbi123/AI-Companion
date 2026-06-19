@@ -10,6 +10,14 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Stitch / Aura AI design tokens */
+  --color-primary: #6366F1;
+  --color-surface: #111827;
+  --color-surface-container: #151C2C;
+  --color-on-surface: #E5E7EB;
+  --color-on-surface-variant: #9CA3AF;
+  --color-outline: #232B3D;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -23,4 +31,15 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Scroll-reveal animation (used on landing page) */
+.reveal {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
 }

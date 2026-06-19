@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(Get-Content \"c:/Users/moham/OneDrive/Bureau/AI companion/Backend/requirements.txt\" -Raw)",
-      "Bash(Get-Content \"c:/Users/moham/OneDrive/Bureau/AI companion/Backend/app/core/config.py\" -Raw)",
-      "PowerShell(Get-ChildItem \"c:/Users/moham/OneDrive/Bureau/AI companion/Backend\" -Recurse -Name | Where-Object { $_ -notmatch \"__pycache__|\\\\.pyc|venv|\\\\.venv|node_modules\" } | Sort-Object)"
-    ]
-  }
-}
