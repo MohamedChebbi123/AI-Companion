@@ -12,3 +12,11 @@ class Register(BaseModel):
 class Login(BaseModel):
     email: EmailStr
     password: str
+
+
+class Logout(BaseModel):
+    refresh_token: str
+
+
+class Refresh(BaseModel):
+    refresh_token: str

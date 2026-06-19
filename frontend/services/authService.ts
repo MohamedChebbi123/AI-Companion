@@ -25,7 +25,14 @@ export interface UserResponse {
   display_name: string;
 }
 
+export interface RefreshResponse {
+  access_token: string;
+  token_type: string;
+}
+
 export const authService = {
   login:    (data: LoginPayload)    => api.post<TokenResponse>('/auth/login', data),
   register: (data: RegisterPayload) => api.post<UserResponse>('/auth/register', data),
+  logout:   (refreshToken: string)  => api.post<void>('/auth/logout', { refresh_token: refreshToken }),
+  refresh:  (refreshToken: string)  => api.post<RefreshResponse>('/auth/refresh', { refresh_token: refreshToken }),
 };
