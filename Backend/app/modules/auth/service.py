@@ -1,14 +1,12 @@
 from datetime import datetime, timezone
-
 from sqlalchemy.orm import Session
-
 from app.core.errors import AuthError, ConflictError
 from app.db.repositories.users import UserRepository
 from app.db.repositories.refresh_tokens import RefreshTokenRepository
 from app.db.models.user import User
 from app.modules.auth.password import hash_password, verify_password
 from app.modules.auth.schemas import Register, Login
-from app.modules.auth.tokens import create_access_token
+from app.modules.auth.tokens import create_access_token, create_refresh_token
 
 
 def register(db: Session, data: Register) -> User:
@@ -41,7 +39,7 @@ def logout(db: Session, raw_token: str) -> None:
         repo.delete(record)
 
 
-def refresh(db: Session, raw_token: str) -> str:
+def refresh(db: Session, raw_token: str) -> tuple[str, str]:
     repo = RefreshTokenRepository(db)
     record = repo.get_by_raw_token(raw_token)
     if not record:
@@ -49,4 +47,8 @@ def refresh(db: Session, raw_token: str) -> str:
     if record.expires_at < datetime.now(timezone.utc):
         repo.delete(record)
         raise AuthError("Refresh token expired")
-    return create_access_token(str(record.user_id))
+    user_id = str(record.user_id)
+    repo.delete(record)
+    new_refresh_token = create_refresh_token(user_id)
+    repo.create(record.user_id, new_refresh_token)
+    return create_access_token(user_id), new_refresh_token
