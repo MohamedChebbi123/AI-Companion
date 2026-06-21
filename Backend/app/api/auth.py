@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
 from app.core.deps import get_db, get_current_user
-from app.core.errors import AuthError, ConflictError
+from app.core.errors import AuthError, ConflictError, NotFoundError
 from app.db.models.user import User
 from app.db.repositories.refresh_tokens import RefreshTokenRepository
-from app.modules.auth.schemas import Register, Login, Logout, Refresh
-from app.modules.auth.service import register, login, logout, refresh
+from app.modules.auth.schemas import Register, Login, Logout, Refresh, forget_password as ForgetPasswordSchema, ForgotPassword
+from app.modules.auth.service import register, login, logout, refresh, forget_password, request_password_reset
 from app.modules.auth.tokens import create_access_token, create_refresh_token
 from app.core.ratelimit import limiter
 
@@ -59,6 +59,23 @@ def refresh_route(data: Refresh, db: Session = Depends(get_db)):
 @router.post("/logout", status_code=204)
 def logout_route(data: Logout, db: Session = Depends(get_db)):
     logout(db, data.refresh_token)
+
+
+@router.post("/forgot-password", status_code=204)
+@limiter.limit("3/minute")
+def forgot_password_route(request: Request, data: ForgotPassword, db: Session = Depends(get_db)):
+    request_password_reset(db, data)
+
+
+@router.post("/reset-password", status_code=204)
+@limiter.limit("5/minute")
+def reset_password_route(request: Request, data: ForgetPasswordSchema, db: Session = Depends(get_db)):
+    try:
+        forget_password(db, data)
+    except NotFoundError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.message)
+    except AuthError as e:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=e.message)
 
 
 @router.get("/me")

@@ -41,8 +41,11 @@ class UserRepository:
         self.db.delete(user)
         self.db.commit()
     
-    def update(self,user:User,**fields):
-        for key,value in fields.items:
-            setattr(user,key,value)
+    def update(self, user: User, **fields) -> User:
+        for key, value in fields.items():
+            setattr(user, key, value)
         self.db.commit()
         self.db.refresh(user)
+        return user
+    
+    

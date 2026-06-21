@@ -1,100 +1,110 @@
 @import "tailwindcss";
 
-/* Class-based dark mode for Tailwind v4 */
-@custom-variant dark (&:where(.dark, .dark *));
+:root {
+  --background: #050508;
+  --foreground: #ffffff;
+}
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-
-  --color-primary: #6366F1;
-  --color-surface: #111827;
-  --color-surface-container: #151C2C;
-  --color-on-surface: #E5E7EB;
-  --color-on-surface-variant: #9CA3AF;
-  --color-outline: #232B3D;
-}
-
-/* Auth page theme tokens */
-:root {
-  --background: #fdf6f0;
-  --foreground: #2d1f1a;
-
-  /* Rose & Cream light theme */
-  --auth-bg: #f0e6df;
-  --auth-gradient: radial-gradient(ellipse 75% 55% at 50% 38%, rgba(192,101,74,0.09) 0%, transparent 65%);
-  --auth-card-bg: #fdf6f0;
-  --auth-card-border: #e8cfc9;
-  --auth-card-shadow: 0 0 0 1px #e8cfc9, 0 8px 32px rgba(45,31,26,0.09), 0 1px 2px rgba(45,31,26,0.05);
-  --auth-logo-divider: #f0ddd7;
-  --auth-text-primary: #2d1f1a;
-  --auth-text-muted: #a07060;
-  --auth-text-label: #b06060;
-  --auth-text-forgot: #c0654a;
-  --auth-text-footer: #a07060;
-  --auth-text-footer-link: #c0654a;
-  --auth-input-bg: #ffffff;
-  --auth-input-border: #e8cfc9;
-  --auth-input-focus-border: #c0654a;
-  --auth-input-focus-bg: #ffffff;
-  --auth-footer-border: #f0ddd7;
-  --auth-error-bg: rgba(192,101,74,0.08);
-  --auth-error-border: rgba(192,101,74,0.22);
-  --auth-accent: #c0654a;
-  --auth-accent-shadow: 0 1px 2px rgba(45,31,26,0.25), 0 0 0 1px rgba(192,101,74,0.45);
-  --auth-logo-bg: #f2c4b4;
-  --auth-logo-border: rgba(192,101,74,0.30);
-  --auth-logo-dot: #c0654a;
-  --auth-logo-ring: rgba(192,101,74,0.45);
-}
-
-.dark {
-  --background: #0a0a0a;
-  --foreground: #ededed;
-
-  /* Charcoal & Violet dark theme */
-  --auth-bg: #0A0A0F;
-  --auth-gradient: radial-gradient(ellipse 75% 55% at 50% 38%, rgba(124,92,255,0.10) 0%, transparent 65%);
-  --auth-card-bg: rgba(255,255,255,0.025);
-  --auth-card-border: rgba(255,255,255,0.07);
-  --auth-card-shadow: 0 0 0 1px rgba(255,255,255,0.04), 0 8px 48px rgba(0,0,0,0.55), 0 1px 2px rgba(0,0,0,0.4);
-  --auth-logo-divider: rgba(255,255,255,0.05);
-  --auth-text-primary: #FFFFFF;
-  --auth-text-muted: rgba(255,255,255,0.38);
-  --auth-text-label: rgba(255,255,255,0.50);
-  --auth-text-forgot: rgba(255,255,255,0.30);
-  --auth-text-footer: rgba(255,255,255,0.28);
-  --auth-text-footer-link: rgba(255,255,255,0.50);
-  --auth-input-bg: rgba(255,255,255,0.04);
-  --auth-input-border: rgba(255,255,255,0.08);
-  --auth-input-focus-border: rgba(124,92,255,0.55);
-  --auth-input-focus-bg: rgba(255,255,255,0.055);
-  --auth-footer-border: rgba(255,255,255,0.05);
-  --auth-error-bg: rgba(239,68,68,0.07);
-  --auth-error-border: rgba(239,68,68,0.14);
-  --auth-accent: #7C5CFF;
-  --auth-accent-shadow: 0 1px 2px rgba(0,0,0,0.35), 0 0 0 1px rgba(124,92,255,0.45);
-  --auth-logo-bg: rgba(124,92,255,0.10);
-  --auth-logo-border: rgba(124,92,255,0.22);
-  --auth-logo-dot: #7C5CFF;
-  --auth-logo-ring: rgba(124,92,255,0.45);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans, system-ui, sans-serif);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Scroll-reveal animation (used on landing page) */
-.reveal {
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(168, 85, 247, 0.3); border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(168, 85, 247, 0.55); }
+
+/* ── Keyframes ─────────────────────────────────────────── */
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-14px); }
 }
-.reveal.active {
-  opacity: 1;
-  transform: translateY(0);
+
+@keyframes float-r {
+  0%, 100% { transform: translateY(0px) rotate(3deg); }
+  50%       { transform: translateY(-10px) rotate(-2deg); }
 }
+
+@keyframes wave-bar {
+  0%, 100% { transform: scaleY(0.3); }
+  50%       { transform: scaleY(1); }
+}
+
+@keyframes pulse-ring {
+  0%   { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.6); }
+  70%  { transform: scale(1);    box-shadow: 0 0 0 14px rgba(168, 85, 247, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0   rgba(168, 85, 247, 0); }
+}
+
+@keyframes gradient-flow {
+  0%   { background-position: 0%   50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0%   50%; }
+}
+
+@keyframes typing-dot {
+  0%, 60%, 100% { transform: translateY(0);   opacity: 0.35; }
+  30%            { transform: translateY(-5px); opacity: 1;    }
+}
+
+@keyframes scroll-dot {
+  0%, 100% { transform: translateY(0);  opacity: 0.7; }
+  50%       { transform: translateY(8px); opacity: 0.2; }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+@keyframes orb-drift {
+  0%, 100% { transform: translate(0, 0)    scale(1);    }
+  33%       { transform: translate(40px,-30px) scale(1.1); }
+  66%       { transform: translate(-20px,20px) scale(0.95);}
+}
+
+/* ── Utility classes ───────────────────────────────────── */
+
+.animate-float        { animation: float 7s ease-in-out infinite; }
+.animate-float-r      { animation: float-r 5s ease-in-out infinite; }
+.animate-pulse-ring   { animation: pulse-ring 2.4s ease-out infinite; }
+.animate-gradient     { background-size: 200% 200%; animation: gradient-flow 5s ease infinite; }
+.animate-fade-up      { animation: fade-up 0.6s ease both; }
+.animate-shimmer      { background-size: 200% auto; animation: shimmer 3s linear infinite; }
+
+.glass {
+  background: rgba(255,255,255,0.045);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 1rem;
+}
+
+.glass-sm {
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 0.75rem;
+}
+
+.glow-purple { box-shadow: 0 0 40px rgba(168,85,247,0.35); }
+.glow-pink   { box-shadow: 0 0 40px rgba(236,72,153,0.3);  }

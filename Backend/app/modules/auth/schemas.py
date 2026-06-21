@@ -44,3 +44,12 @@ class Logout(BaseModel):
 
 class Refresh(BaseModel):
     refresh_token: str
+
+
+class forget_password(BaseModel):
+    password: str
+    password_refresh_token: str
+
+
+class ForgotPassword(BaseModel):
+    email: EmailStr
