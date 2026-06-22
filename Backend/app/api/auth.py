@@ -48,7 +48,8 @@ def login_route(request: Request, data: Login, db: Session = Depends(get_db)):
 
 
 @router.post("/refresh")
-def refresh_route(data: Refresh, db: Session = Depends(get_db)):
+@limiter.limit("10/minute")
+def refresh_route(request: Request, data: Refresh, db: Session = Depends(get_db)):
     try:
         access_token, new_refresh_token = refresh(db, data.refresh_token)
     except AuthError as e:
@@ -79,7 +80,8 @@ def reset_password_route(request: Request, data: ForgetPasswordSchema, db: Sessi
 
 
 @router.get("/me")
-def me(user: User = Depends(get_current_user)):
+@limiter.limit("5/minute")
+def me(request:Request,user: User = Depends(get_current_user)):
     return {
         "id": str(user.id),
         "email": user.email,

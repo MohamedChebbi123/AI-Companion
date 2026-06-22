@@ -51,9 +51,10 @@ def refresh(db: Session, raw_token: str) -> tuple[str, str]:
         repo.delete(record)
         raise AuthError("Refresh token expired")
     user_id = str(record.user_id)
-    repo.delete(record)
     new_refresh_token = create_refresh_token(user_id)
-    repo.create(record.user_id, new_refresh_token)
+    repo.delete_no_commit(record)
+    repo.create_no_commit(record.user_id, new_refresh_token)
+    db.commit()
     return create_access_token(user_id), new_refresh_token
 
 
@@ -68,8 +69,12 @@ def request_password_reset(db: Session, data: ForgotPassword) -> None:
     token_repo.delete_all_for_user(user.id)
 
     raw_token = secrets.token_urlsafe(32)
-    token_repo.create(user.id, raw_token)
-    send_password_reset_email(user.email, raw_token)
+    record = token_repo.create(user.id, raw_token)
+    try:
+        send_password_reset_email(user.email, raw_token)
+    except Exception:
+        token_repo.delete(record)
+        raise
 
 
 def forget_password(db: Session, data: forget_password):
@@ -86,7 +91,12 @@ def forget_password(db: Session, data: forget_password):
     repo = UserRepository(db)
     user = repo.get_by_id(record.user_id)
 
+    if not user:
+        raise NotFoundError("User not found")
+
     user.password_hash = hash_password(data.password)
-    token_repo.delete(record)
+    token_repo.delete_all_for_user(record.user_id)
+    RefreshTokenRepository(db).delete_all_for_user(record.user_id)
+
     db.commit()
     

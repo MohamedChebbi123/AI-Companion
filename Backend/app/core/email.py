@@ -1,8 +1,11 @@
+import logging
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 from app.core.config import settings
+
+logger = logging.getLogger(__name__)
 
 
 def send_password_reset_email(to_email: str, raw_token: str) -> None:
@@ -19,8 +22,12 @@ def send_password_reset_email(to_email: str, raw_token: str) -> None:
     )
     msg.attach(MIMEText(body, "plain"))
 
-    with smtplib.SMTP(settings.MAIL_SERVER, settings.MAIL_PORT) as smtp:
-        smtp.ehlo()
-        smtp.starttls()
-        smtp.login(settings.MAIL_USERNAME, settings.MAIL_PASSWORD)
-        smtp.sendmail(settings.MAIL_FROM, to_email, msg.as_string())
+    try:
+        with smtplib.SMTP(settings.MAIL_SERVER, settings.MAIL_PORT) as smtp:
+            smtp.ehlo()
+            smtp.starttls()
+            smtp.login(settings.MAIL_USERNAME, settings.MAIL_PASSWORD)
+            smtp.sendmail(settings.MAIL_FROM, to_email, msg.as_string())
+    except smtplib.SMTPException as e:
+        logger.error("Failed to send password reset email to %s: %s", to_email, e)
+        raise

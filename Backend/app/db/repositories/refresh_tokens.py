@@ -13,16 +13,19 @@ class RefreshTokenRepository:
         self.db = db
 
     def create(self, user_id: UUID, raw_token: str) -> RefreshToken:
-        token_hash = hashlib.sha256(raw_token.encode()).hexdigest()
-        expires_at = datetime.now(timezone.utc) + timedelta(days=7)
-        record = RefreshToken(
-            user_id=user_id,
-            token_hash=token_hash,
-            expires_at=expires_at,
-        )
-        self.db.add(record)
+        record = self._build(user_id, raw_token)
         self.db.commit()
         self.db.refresh(record)
+        return record
+
+    def create_no_commit(self, user_id: UUID, raw_token: str) -> None:
+        self._build(user_id, raw_token)
+
+    def _build(self, user_id: UUID, raw_token: str) -> RefreshToken:
+        token_hash = hashlib.sha256(raw_token.encode()).hexdigest()
+        expires_at = datetime.now(timezone.utc) + timedelta(days=7)
+        record = RefreshToken(user_id=user_id, token_hash=token_hash, expires_at=expires_at)
+        self.db.add(record)
         return record
 
     def get_by_raw_token(self, raw_token: str):
@@ -32,6 +35,9 @@ class RefreshTokenRepository:
     def delete(self, record: RefreshToken) -> None:
         self.db.delete(record)
         self.db.commit()
+
+    def delete_no_commit(self, record: RefreshToken) -> None:
+        self.db.delete(record)
 
     def delete_all_for_user(self, user_id: UUID) -> None:
         self.db.query(RefreshToken).filter(RefreshToken.user_id == user_id).delete()
