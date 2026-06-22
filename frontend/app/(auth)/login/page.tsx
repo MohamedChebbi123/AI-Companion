@@ -1,11 +1,32 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Eye, EyeOff, Sparkles, Mail, Lock, ArrowRight } from 'lucide-react'
 import Aurora from '../../../components/Aurora'
+import { login } from '../../../services/authservice'
 
 export default function LoginPage() {
+  const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
+  const [email, setEmail]               = useState('')
+  const [password, setPassword]         = useState('')
+  const [error, setError]               = useState<string | null>(null)
+  const [loading, setLoading]           = useState(false)
+
+  async function handleSubmit(e: { preventDefault(): void }) {
+    e.preventDefault()
+    setError(null)
+    setLoading(true)
+    try {
+      await login({ email, password })
+      router.push('/')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Login failed')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <div className="relative min-h-screen bg-background text-foreground flex flex-col overflow-hidden">
@@ -53,7 +74,13 @@ export default function LoginPage() {
           </div>
 
           {/* Card */}
-          <div className="glass p-7 sm:p-8 space-y-5">
+          <form onSubmit={handleSubmit} className="glass p-7 sm:p-8 space-y-5">
+
+            {error && (
+              <div className="px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
+                {error}
+              </div>
+            )}
 
             {/* Email */}
             <div className="space-y-1.5">
@@ -63,6 +90,9 @@ export default function LoginPage() {
               <input
                 type="email"
                 placeholder="you@example.com"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                required
                 className="w-full px-4 py-3 rounded-xl text-sm text-white placeholder:text-white/20 outline-none bg-white/[0.05] border border-white/[0.08] backdrop-blur-sm focus:border-purple-500/60 focus:bg-white/[0.07] focus:shadow-[0_0_0_3px_rgba(168,85,247,0.12)] transition-all"
               />
             </div>
@@ -81,6 +111,9 @@ export default function LoginPage() {
                 <input
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Your password"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  required
                   className="w-full px-4 py-3 pr-12 rounded-xl text-sm text-white placeholder:text-white/20 outline-none bg-white/[0.05] border border-white/[0.08] backdrop-blur-sm focus:border-purple-500/60 focus:bg-white/[0.07] focus:shadow-[0_0_0_3px_rgba(168,85,247,0.12)] transition-all"
                 />
                 <button
@@ -97,12 +130,13 @@ export default function LoginPage() {
             {/* Submit */}
             <button
               type="submit"
-              className="w-full py-3.5 rounded-xl font-semibold text-sm bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 transition-all shadow-[0_0_24px_rgba(168,85,247,0.35)] hover:shadow-[0_0_36px_rgba(168,85,247,0.55)] hover:-translate-y-0.5 flex items-center justify-center gap-2 mt-1"
+              disabled={loading}
+              className="w-full py-3.5 rounded-xl font-semibold text-sm bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 transition-all shadow-[0_0_24px_rgba(168,85,247,0.35)] hover:shadow-[0_0_36px_rgba(168,85,247,0.55)] hover:-translate-y-0.5 flex items-center justify-center gap-2 mt-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
             >
-              Sign in
-              <ArrowRight size={16} />
+              {loading ? 'Signing in…' : 'Sign in'}
+              {!loading && <ArrowRight size={16} />}
             </button>
-          </div>
+          </form>
 
           {/* Footer note */}
           <p className="text-center text-[11px] text-white/22 leading-relaxed">

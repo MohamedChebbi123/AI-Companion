@@ -1,8 +1,10 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Eye, EyeOff, Sparkles, Globe, User, Mail, Lock, ArrowRight, Check } from 'lucide-react'
 import Aurora from '../../../components/Aurora'
+import { register } from '../../../services/authservice'
 
 const PASSWORD_RULES = [
   { label: 'At least 8 characters',  test: (v: string) => v.length >= 8 },
@@ -16,13 +18,38 @@ const LOCALES = [
   { value: 'en', flag: '🇺🇸', native: 'English' },
   { value: 'fr', flag: '🇫🇷', native: 'Français' },
   { value: 'ar', flag: '🇸🇦', native: 'العربية' },
-]
+] as const
 
 export default function RegisterPage() {
-  const [locale, setLocale]             = useState('en')
+  const router = useRouter()
+  const [locale, setLocale]             = useState<'en' | 'fr' | 'ar'>('en')
+  const [displayName, setDisplayName]   = useState('')
+  const [email, setEmail]               = useState('')
   const [password, setPassword]         = useState('')
+  const [confirm, setConfirm]           = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirm, setShowConfirm]   = useState(false)
+  const [error, setError]               = useState<string | null>(null)
+  const [loading, setLoading]           = useState(false)
+
+  const allRulesPass = PASSWORD_RULES.every(r => r.test(password))
+  const passwordsMatch = password === confirm && confirm.length > 0
+
+  async function handleSubmit(e: { preventDefault(): void }) {
+    e.preventDefault()
+    if (!allRulesPass) { setError('Password does not meet all requirements'); return }
+    if (!passwordsMatch) { setError('Passwords do not match'); return }
+    setError(null)
+    setLoading(true)
+    try {
+      await register({ email, password, display_name: displayName, locale })
+      router.push('/login')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Registration failed')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <div className="relative min-h-screen bg-background text-foreground flex flex-col overflow-hidden">
@@ -70,7 +97,13 @@ export default function RegisterPage() {
           </div>
 
           {/* Card */}
-          <div className="glass p-7 sm:p-8 space-y-5">
+          <form onSubmit={handleSubmit} className="glass p-7 sm:p-8 space-y-5">
+
+            {error && (
+              <div className="px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
+                {error}
+              </div>
+            )}
 
             {/* Display name */}
             <div className="space-y-1.5">
@@ -81,6 +114,9 @@ export default function RegisterPage() {
                 type="text"
                 placeholder="your_username"
                 maxLength={15}
+                value={displayName}
+                onChange={e => setDisplayName(e.target.value)}
+                required
                 className="w-full px-4 py-3 rounded-xl text-sm text-white placeholder:text-white/20 outline-none bg-white/[0.05] border border-white/[0.08] backdrop-blur-sm focus:border-purple-500/60 focus:bg-white/[0.07] focus:shadow-[0_0_0_3px_rgba(168,85,247,0.12)] transition-all"
               />
             </div>
@@ -93,6 +129,9 @@ export default function RegisterPage() {
               <input
                 type="email"
                 placeholder="you@example.com"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                required
                 className="w-full px-4 py-3 rounded-xl text-sm text-white placeholder:text-white/20 outline-none bg-white/[0.05] border border-white/[0.08] backdrop-blur-sm focus:border-purple-500/60 focus:bg-white/[0.07] focus:shadow-[0_0_0_3px_rgba(168,85,247,0.12)] transition-all"
               />
             </div>
@@ -132,6 +171,7 @@ export default function RegisterPage() {
                   placeholder="Create a strong password"
                   value={password}
                   onChange={e => setPassword(e.target.value)}
+                  required
                   className="w-full px-4 py-3 pr-12 rounded-xl text-sm text-white placeholder:text-white/20 outline-none bg-white/[0.05] border border-white/[0.08] backdrop-blur-sm focus:border-purple-500/60 focus:bg-white/[0.07] focus:shadow-[0_0_0_3px_rgba(168,85,247,0.12)] transition-all"
                 />
                 <button
@@ -170,7 +210,16 @@ export default function RegisterPage() {
                 <input
                   type={showConfirm ? 'text' : 'password'}
                   placeholder="Repeat your password"
-                  className="w-full px-4 py-3 pr-12 rounded-xl text-sm text-white placeholder:text-white/20 outline-none bg-white/[0.05] border border-white/[0.08] backdrop-blur-sm focus:border-purple-500/60 focus:bg-white/[0.07] focus:shadow-[0_0_0_3px_rgba(168,85,247,0.12)] transition-all"
+                  value={confirm}
+                  onChange={e => setConfirm(e.target.value)}
+                  required
+                  className={`w-full px-4 py-3 pr-12 rounded-xl text-sm text-white placeholder:text-white/20 outline-none bg-white/[0.05] border backdrop-blur-sm focus:bg-white/[0.07] focus:shadow-[0_0_0_3px_rgba(168,85,247,0.12)] transition-all ${
+                    confirm.length > 0
+                      ? passwordsMatch
+                        ? 'border-emerald-500/50 focus:border-emerald-500/70'
+                        : 'border-red-500/50 focus:border-red-500/70'
+                      : 'border-white/[0.08] focus:border-purple-500/60'
+                  }`}
                 />
                 <button
                   type="button"
@@ -186,12 +235,13 @@ export default function RegisterPage() {
             {/* Submit */}
             <button
               type="submit"
-              className="w-full py-3.5 rounded-xl font-semibold text-sm bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 transition-all shadow-[0_0_24px_rgba(168,85,247,0.35)] hover:shadow-[0_0_36px_rgba(168,85,247,0.55)] hover:-translate-y-0.5 flex items-center justify-center gap-2 mt-1"
+              disabled={loading}
+              className="w-full py-3.5 rounded-xl font-semibold text-sm bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 transition-all shadow-[0_0_24px_rgba(168,85,247,0.35)] hover:shadow-[0_0_36px_rgba(168,85,247,0.55)] hover:-translate-y-0.5 flex items-center justify-center gap-2 mt-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
             >
-              Create account
-              <ArrowRight size={16} />
+              {loading ? 'Creating account…' : 'Create account'}
+              {!loading && <ArrowRight size={16} />}
             </button>
-          </div>
+          </form>
 
           {/* Footer note */}
           <p className="text-center text-[11px] text-white/22 leading-relaxed px-4">
