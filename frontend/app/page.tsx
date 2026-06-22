@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useTheme } from '../contexts/ThemeContext'
 import {
   Sparkles, Mic, Brain, Zap, Globe, ShieldCheck,
   Music2, Target, MessageCircle, CalendarDays,
@@ -174,10 +175,11 @@ function Badge({ children, color = 'purple' }: { children: React.ReactNode; colo
 
 export default function Home() {
   const [voiceActive, setVoiceActive] = useState(true)
+  const { theme } = useTheme()
 
 
   return (
-    <div className="relative min-h-screen bg-[#050508] text-white overflow-x-hidden">
+    <div className="relative min-h-screen bg-background text-foreground overflow-x-hidden">
 
       {/* ── Aurora background ── */}
       <div className="fixed inset-0 pointer-events-none" style={{ width: '100vw', height: '100vh' }} aria-hidden>
@@ -304,7 +306,7 @@ export default function Home() {
                 noiseScale={1.0}
                 pupilFollow={1.0}
                 flameSpeed={1.0}
-                backgroundColor="#050508"
+                backgroundColor={theme === 'dark' ? '#050508' : '#f3f0ff'}
               />
             </div>
           </div>

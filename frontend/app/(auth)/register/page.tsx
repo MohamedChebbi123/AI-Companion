@@ -25,7 +25,7 @@ export default function RegisterPage() {
   const [showConfirm, setShowConfirm]   = useState(false)
 
   return (
-    <div className="relative min-h-screen bg-[#050508] text-white flex flex-col overflow-hidden">
+    <div className="relative min-h-screen bg-background text-foreground flex flex-col overflow-hidden">
 
       {/* Aurora background */}
       <div className="fixed inset-0 pointer-events-none" aria-hidden>
