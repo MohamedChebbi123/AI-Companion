@@ -89,8 +89,14 @@ export default function ChatPage() {
     setMessages(prev => [...prev, { role: 'user', content: text }])
     setSending(true)
     try {
-      const reply = await sendMessage(activeConv.id, text)
-      setMessages(prev => [...prev, { role: 'assistant', content: reply }])
+      const result = await sendMessage(activeConv.id, text)
+      setMessages(prev => [...prev, { role: 'assistant', content: result.reply }])
+      if (result.title) {
+        setConversations(prev =>
+          prev.map(c => c.id === activeConv.id ? { ...c, title: result.title! } : c)
+        )
+        setActiveConv(prev => prev ? { ...prev, title: result.title! } : prev)
+      }
     } catch {
       setMessages(prev => [...prev, { role: 'assistant', content: 'Something went wrong. Please try again.' }])
     } finally {

@@ -23,7 +23,12 @@ async function authFetch(input: string, init: RequestInit = {}): Promise<Respons
   return res
 }
 
-export async function sendMessage(conversationId: string, message: string): Promise<string> {
+export interface ChatResult {
+  reply: string
+  title: string | null
+}
+
+export async function sendMessage(conversationId: string, message: string): Promise<ChatResult> {
   const res = await authFetch(`${BASE_URL}/ai/chat/${conversationId}`, {
     method: 'POST',
     body: JSON.stringify({ message }),
@@ -32,6 +37,5 @@ export async function sendMessage(conversationId: string, message: string): Prom
     const err = await res.json().catch(() => ({ detail: 'Failed to get response' }))
     throw new Error(err.detail ?? 'Failed to get response')
   }
-  const data: { reply: string } = await res.json()
-  return data.reply
+  return res.json()
 }

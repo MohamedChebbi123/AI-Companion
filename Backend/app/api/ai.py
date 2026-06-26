@@ -19,6 +19,7 @@ class ChatRequest(BaseModel):
 
 class ChatResponse(BaseModel):
     reply: str
+    title: str | None = None
 
 
 @router.post("/chat/{conversation_id}", response_model=ChatResponse)
@@ -29,8 +30,8 @@ async def chat(
     user: User = Depends(get_current_user),
 ):
     try:
-        reply = await get_chat_response(db, conversation_id, user.id, data.message)
-        return ChatResponse(reply=reply)
+        result = await get_chat_response(db, conversation_id, user.id, data.message)
+        return ChatResponse(reply=result["reply"], title=result["title"])
     except NotFoundError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.message)
     except AuthError as e:

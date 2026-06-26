@@ -41,6 +41,12 @@ class ConversationRepository:
         )
         return list(result.scalars().all())
 
+    async def update_title(self, conversation: Conversation, title: str) -> Conversation:
+        conversation.title = title
+        await self.db.commit()
+        await self.db.refresh(conversation)
+        return conversation
+
     async def delete(self, conversation: Conversation) -> None:
         await self.db.delete(conversation)
         await self.db.commit()
