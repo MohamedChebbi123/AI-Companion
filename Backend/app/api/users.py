@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.deps import get_db, get_current_user
 from app.db.models.user import User
@@ -10,7 +10,7 @@ router = APIRouter(prefix="/users", tags=["users"])
 
 
 @router.get("/profile")
-def get_profile(user: User = Depends(get_current_user)):
+async def get_profile(user: User = Depends(get_current_user)):
     return {
         "id": str(user.id),
         "email": user.email,
@@ -22,12 +22,12 @@ def get_profile(user: User = Depends(get_current_user)):
 
 
 @router.patch("/profile")
-def patch_profile(
+async def patch_profile(
     data: UpdateProfile,
-    db: Session = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
     user: User = Depends(get_current_user),
 ):
-    updated = update_profile(db, user, data)
+    updated = await update_profile(db, user, data)
     return {
         "id": str(updated.id),
         "email": updated.email,

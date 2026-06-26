@@ -12,6 +12,7 @@ class Persona(Base):
     owner_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
 
     name = Column(Text, nullable=False)
+    avatar_url = Column(Text, nullable=True)
 
     definition = Column(JSONB, nullable=False)
 

@@ -46,7 +46,7 @@ class Refresh(BaseModel):
     refresh_token: str
 
 
-class forget_password(BaseModel):
+class ResetPassword(BaseModel):
     password: str
     password_refresh_token: str
 

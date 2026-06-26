@@ -1,11 +1,14 @@
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
+from sqlalchemy import create_engine
 
 from alembic import context
-from app.db.session import Base, engine
+from app.db.session import Base
+from app.core.config import settings
 import app.db.models  # noqa: F401
+
+_sync_url = settings.DATABASE_URL.replace("postgresql+asyncpg://", "postgresql+pg8000://", 1)
+engine = create_engine(_sync_url)
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

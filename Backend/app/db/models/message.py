@@ -14,7 +14,6 @@ class Message(Base):
     role = Column(Text, nullable=False)
     content = Column(Text, nullable=False)
     modality = Column(Text, nullable=False, default="text")
-    client_msg_id = Column(UUID(as_uuid=True), nullable=True)
 
     token_usage = Column(JSONB, nullable=True)
     truncated = Column(Boolean, nullable=False, default=False)
