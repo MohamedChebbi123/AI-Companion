@@ -52,3 +52,7 @@ class MessageRepository:
         await self.db.commit()
         await self.db.refresh(message)
         return message
+
+    async def delete(self, message: Message) -> None:
+        await self.db.delete(message)
+        await self.db.commit()
